@@ -1,0 +1,117 @@
+# Задача 1. Дополнить справочник возможностью копирования данных из одного файла в другой.Пользователь вводит номер строки, которую необходимо перенести из одного файла в другой.
+
+def input_surname():
+    return input('Введите фамилию контакта: ')
+
+def input_name():
+    return input('Введите имя контакта: ')
+
+def input_patronymic():
+    return input('Введите отчество контакта: ')
+
+def input_phone():
+    return input('Введите телефон контакта: ')
+
+def input_address():
+    return input('Введите адрес(город) контакта: ')
+
+def create_contact():
+    surname = input_surname()
+    name = input_name()
+    patronymic = input_patronymic()
+    phone = input_phone()
+    address = input_address()
+    return f'{surname} {name} {patronymic}: {phone}\n{address}\n\n'
+
+def add_contact():
+  contact_str = create_contact()
+  with open("phonebook.txt", 'a', encoding='utf-8')as file:
+        file.write(contact_str)
+
+def create_list_contact():
+    with open("phonebook.txt", 'r', encoding='utf-8')as file:
+        contacts_str = file.read()
+        return contacts_str.rstrip().split('\n\n') 
+
+def print_contacts(cont_list=create_list_contact()):
+    for n, contact in enumerate(cont_list, 1):
+        print(n, contact)
+
+def search_contact():
+    print(
+        'Возможные варианты поиска:\n'
+        '1. По фамилии\n'
+        '2. По имени\n'
+        '3. По отчеству\n'
+        '4. По телефону\n'
+        '5. По адресу(город)'
+         )
+
+    var = input('Выберите вариант поиска: ')
+    while var not in ('1', '2', '3', '4', '5'):
+        print('Некорректный ввод!')
+        var = input('Выберите вариант поиска: ')  
+    i_var = int(var)-1
+
+    search = input('Введите данные для поиска: ')
+    with open("phonebook.txt", 'r', encoding='utf-8')as file:
+        contacts_str = file.read()
+        contacts_list = contacts_str.rstrip().split('\n\n')
+
+        for str_contact in contacts_list:
+            lst_contact = str_contact.replace(':', '').split()
+            if search in lst_contact[i_var]:
+                print(str_contact)
+
+def copy_contact():
+    contacts_list = create_list_contact()
+
+    print_contacts(contacts_list)
+
+    one_copy_cont = int(input('Выберите контакт по номеру для копирования: '))
+    print()
+
+    # for n, contact in enumerate(contacts_list, 1):
+    #    if n == one_copy_cont:
+    #        print(n, contsct)
+
+    with open("phonebook.txt", 'a', encoding='utf-8')as file:
+        file.write(f'{contacts_list[one_copy_cont-1]}\n\n')
+    
+
+
+def interface():
+    with open("phonebook.txt", 'a', encoding='utf-8')as file:
+        pass
+
+    var = 0
+    while var != '5':
+        print(
+            'Возможные варианты:\n'
+            '1. Добавить контакт\n'
+            '2. Вывести на экран\n'
+            '3. Поиск контакта\n'
+            '4. Копировать контакт\n'
+            '5. Выход'
+              )
+        print()
+        var = input('Выберите вариант действия: ')
+        while var not in ('1','2','3','4', '5'):
+            print('Некорректный ввод!')
+            var = input('Выберите вариант действия: ')
+        print()
+        match var:
+          case '1':
+            add_contact()
+          case '2':
+            print_contacts()
+          case '3':
+            search_contact()
+          case '4':
+            copy_contact()
+          case '5':
+            print('До свидания')
+
+
+if __name__== '__main__':
+    interface()                      
